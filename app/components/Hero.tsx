@@ -6,174 +6,129 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function ConnectSection() {
-  const sectionRef = useRef<HTMLElement>(null);
+export default function Hero() {
+  const heroRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<HTMLElement[]>([]);
+  const subTextRef = useRef<HTMLParagraphElement>(null);
+  const buttonsRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 60,
-        skewY: 4,
-        duration: 1,
-        ease: "power3.out",
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+      });
+
+      tl.fromTo(
+        titleRef.current,
+        { y: 120, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2 },
+      )
+        .fromTo(
+          subTextRef.current,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9 },
+          "-=0.7",
+        )
+        .fromTo(
+          buttonsRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8 },
+          "-=0.6",
+        );
+
+      // Scroll Animation: Scale ko kam rakha hai taake blur na ho
+      gsap.to(videoRef.current, {
+        scale: 1.03,
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
         },
       });
 
-      gsap.from(cardsRef.current, {
+      gsap.to(contentRef.current, {
         opacity: 0,
-        y: 50,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
+        y: 80,
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
         },
       });
-    }, sectionRef);
+    }, heroRef);
 
     return () => ctx.revert();
   }, []);
 
-  const CardIcon = ({ children }: { children: React.ReactNode }) => (
-    <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl">
-      {children}
-    </div>
-  );
-
   return (
     <section
-      ref={sectionRef}
-      id="contact"
-      className="relative w-full py-28 bg-[#0a0a0a] overflow-hidden"
+      ref={heroRef}
+      className="relative w-full h-screen overflow-hidden bg-[#0a0a0a]"
     >
-      {/* Glow Background */}
-      <div className="absolute inset-0">
-        <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#1E90FF]/20 blur-[140px] rounded-full" />
-        <div className="absolute bottom-[-120px] right-0 w-[400px] h-[400px] bg-[#C9A84C]/10 blur-[140px] rounded-full" />
+      {/* Video: Scale 105% taake edges cover hon but blur na ho */}
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none brightness-80 will-change-transform"
+        style={{ transform: "translateZ(0)" }}
+      >
+        <source src="/video/Herovid.mp4" type="video/mp4" />
+      </video>
+
+      {/* Single Clean Overlay: Sirf text ki readability ke liye left side par gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent z-[1]" />
+
+      {/* Content */}
+      <div ref={contentRef} className="relative z-10 flex h-full items-center">
+        <div className="mx-auto w-[85%]">
+          <div className="">
+            <h1
+              ref={titleRef}
+              className="font-space text-5xl font-semibold leading-[0.95] tracking-[-3px] text-white md:text-[100px]"
+            >
+              PURE WATER <br />
+              <span className="text-[#1E90FF]">REIMAGINED</span>
+            </h1>
+          </div>
+
+          <p
+            ref={subTextRef}
+            className="mt-8 max-w-[520px] font-inter text-sm leading-relaxed text-white/70 md:text-base"
+          >
+            Crafted with precision purification and a premium hydration
+            experience designed for modern luxury living.
+          </p>
+
+          <div ref={buttonsRef} className="mt-10 flex flex-wrap gap-4">
+            <button className="group relative overflow-hidden rounded-full bg-[#1E90FF] px-8 py-4 font-inter text-sm text-white transition-all duration-300 hover:scale-[1.03]">
+              <span className="relative z-10">Explore Products</span>
+              <div className="absolute inset-0 translate-y-full bg-white transition-transform duration-500 group-hover:translate-y-0" />
+              <span className="absolute inset-0 z-20 flex items-center justify-center text-black opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                Explore Products
+              </span>
+            </button>
+
+            <button className="rounded-full border border-white/20 bg-white/5 px-8 py-4 font-inter text-sm text-white backdrop-blur-xl transition-all duration-300 hover:border-[#C9A84C] hover:text-[#C9A84C]">
+              Watch Story
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="relative w-[85%] mx-auto">
-        {/* Heading */}
-        <h2
-          ref={titleRef}
-          className="text-center font-space text-5xl md:text-[80px] uppercase tracking-[-2px] text-white leading-none"
-        >
-          Let’s <span className="text-[#1E90FF]">Connect</span>
-        </h2>
-
-        <p className="text-center font-inter text-white/50 mt-6 max-w-xl mx-auto">
-          Choose your preferred way to reach us. We respond instantly.
-        </p>
-
-        {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mt-16">
-          {/* WhatsApp */}
-          <a
-            href="https://wa.me/923452724778"
-            target="_blank"
-            ref={(el) => {
-              if (el) cardsRef.current[0] = el;
-            }}
-            className="group relative p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl overflow-hidden hover:border-[#1E90FF]/40 transition-all duration-500"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#1E90FF]/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
-
-            <CardIcon>
-              {/* WhatsApp Icon */}
-              <svg
-                className="w-6 h-6 text-[#1E90FF]"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M20.52 3.48A11.91 11.91 0 0012.06 0C5.38 0 .02 5.36.02 11.97c0 2.11.55 4.16 1.6 5.98L0 24l6.27-1.64a11.94 11.94 0 005.79 1.47h.01c6.68 0 12.11-5.36 12.11-11.97a11.8 11.8 0 00-3.66-8.38z" />
-              </svg>
-            </CardIcon>
-
-            <h3 className="font-space text-white text-xl mt-6">WhatsApp</h3>
-            <p className="font-inter text-white/50 text-sm mt-2">
-              Chat instantly with our team
-            </p>
-
-            <span className="mt-6 inline-block text-[#1E90FF] font-inter text-xs tracking-[3px] uppercase">
-              Message Now →
-            </span>
-          </a>
-
-          {/* Email */}
-          <a
-            href="mailto:cleariswater@gmail.com"
-            ref={(el) => {
-              if (el) cardsRef.current[1] = el;
-            }}
-            className="group relative p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl overflow-hidden hover:border-[#C9A84C]/40 transition-all duration-500"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#C9A84C]/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
-
-            <CardIcon>
-              {/* Mail Icon */}
-              <svg
-                className="w-6 h-6 text-[#C9A84C]"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21.75 6.75v10.5A2.25 2.25 0 0119.5 19.5h-15A2.25 2.25 0 012.25 17.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75m19.5 0l-9.75 6.75L2.25 6.75"
-                />
-              </svg>
-            </CardIcon>
-
-            <h3 className="font-space text-white text-xl mt-6">Email</h3>
-            <p className="font-inter text-white/50 text-sm mt-2">
-              Business inquiries & partnerships
-            </p>
-
-            <span className="mt-6 inline-block text-[#C9A84C] font-inter text-xs tracking-[3px] uppercase">
-              Send Email →
-            </span>
-          </a>
-
-          {/* Instagram */}
-          <a
-            href="https://instagram.com/"
-            target="_blank"
-            ref={(el) => {
-              if (el) cardsRef.current[2] = el;
-            }}
-            className="group relative p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl overflow-hidden hover:border-pink-400/40 transition-all duration-500"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
-
-            <CardIcon>
-              {/* Instagram Icon */}
-              <svg
-                className="w-6 h-6 text-pink-400"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2z" />
-              </svg>
-            </CardIcon>
-
-            <h3 className="font-space text-white text-xl mt-6">Instagram</h3>
-            <p className="font-inter text-white/50 text-sm mt-2">
-              See our latest branding work
-            </p>
-
-            <span className="mt-6 inline-block text-pink-400 font-inter text-xs tracking-[3px] uppercase">
-              Visit Profile →
-            </span>
-          </a>
+      {/* Simple Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2 flex flex-col items-center gap-3">
+        <span className="font-bebas text-sm tracking-[4px] text-white/40">
+          SCROLL
+        </span>
+        <div className="h-12 w-[1px] bg-white/20 overflow-hidden">
+          <div className="animate-bounce h-4 w-full bg-[#1E90FF]" />
         </div>
       </div>
     </section>

@@ -14,7 +14,6 @@ export default function page() {
       <Testimonials />
       <HowItWorks />
       <Partners />
-
       <ConnectSection />
     </div>
   );
