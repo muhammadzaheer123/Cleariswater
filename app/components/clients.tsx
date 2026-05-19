@@ -41,7 +41,7 @@ export default function Partners() {
 
       <div className="relative w-[85%] mx-auto text-center mb-12">
         <h2 className="font-space font-semibold text-white text-4xl md:text-[70px] uppercase tracking-[1px]">
-          Our <span className="text-[#1E90FF]">Partners</span>
+          Our <span className="text-[#1E90FF]">Clients</span>
         </h2>
         <p className="text-white/50 mt-2 text-[13px] font-inter">
           Restaurants & brands that trust our premium bottled experience

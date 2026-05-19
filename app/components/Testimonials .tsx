@@ -18,7 +18,7 @@ interface Review {
   ts: number;
 }
 
-// ─── 1 Seed review ───────────────────────────────────────
+// ─── Seed review (shown until DB loads) ──────────────────
 const SEED: Review = {
   id: "seed-1",
   name: "Muhammad Zaheer",
@@ -113,7 +113,74 @@ function ReviewCard({ review, isNew }: { review: Review; isNew?: boolean }) {
   );
 }
 
-// ─── Main ─────────────────────────────────────────────────
+// ─── Read More Button ────────────────────────────────────
+function ReadMoreBtn({
+  hidden,
+  showAll,
+  onClick,
+}: {
+  hidden: number;
+  showAll: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div className="relative flex justify-center mt-8 mb-14">
+      {/* Fade gradient over last card row */}
+      {!showAll && (
+        <div className="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-t from-[#0a0a0a] to-transparent pointer-events-none" />
+      )}
+      <button
+        onClick={onClick}
+        className="group relative flex items-center gap-3 border border-white/10 rounded-full px-8 py-3.5
+          text-sm text-white/50 hover:text-white hover:border-[#1E90FF]/40
+          bg-white/[0.02] hover:bg-[#1E90FF]/[0.05] backdrop-blur-sm
+          transition-all duration-300"
+      >
+        {showAll ? (
+          <>
+            <svg
+              className="w-3.5 h-3.5 rotate-180 transition-transform duration-300 group-hover:-translate-y-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+            <span>Show Less</span>
+          </>
+        ) : (
+          <>
+            <span>
+              Read {hidden} More Review{hidden !== 1 ? "s" : ""}
+            </span>
+            <svg
+              className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-y-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </>
+        )}
+      </button>
+    </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────
+const SHOW_INITIAL = 4;
+
 export default function Testimonials() {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
@@ -124,6 +191,7 @@ export default function Testimonials() {
   const [newIds, setNewIds] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [liveCount, setLiveCount] = useState(0); // new reviews arrived via SSE
 
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
@@ -134,7 +202,7 @@ export default function Testimonials() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  // ── Load from MongoDB ──
+  // ── Fetch initial reviews ──────────────────────────────
   const fetchReviews = useCallback(async () => {
     try {
       const res = await fetch("/api/reviews");
@@ -152,7 +220,46 @@ export default function Testimonials() {
     fetchReviews();
   }, [fetchReviews]);
 
-  // ── GSAP ──
+  // ── Real-time SSE listener ─────────────────────────────
+  useEffect(() => {
+    const es = new EventSource("/api/reviews/stream");
+
+    es.onmessage = (e) => {
+      try {
+        const payload = JSON.parse(e.data);
+
+        if (payload.type === "new_review") {
+          const incoming: Review = payload.review;
+          const incomingId = getId(incoming);
+
+          setReviews((prev) => {
+            // avoid duplicates
+            if (prev.some((r) => getId(r) === incomingId)) return prev;
+            // insert after SEED (index 0), before the rest
+            return [prev[0], incoming, ...prev.slice(1)];
+          });
+
+          setNewIds((prev) => new Set(prev).add(incomingId));
+          setLiveCount((c) => c + 1);
+
+          // remove "new" highlight after 8s
+          setTimeout(() => {
+            setNewIds((prev) => {
+              const next = new Set(prev);
+              next.delete(incomingId);
+              return next;
+            });
+          }, 8000);
+        }
+      } catch {
+        /* ignore parse errors */
+      }
+    };
+
+    return () => es.close();
+  }, []);
+
+  // ── GSAP scroll animations ─────────────────────────────
   useEffect(() => {
     if (loading) return;
     const ctx = gsap.context(() => {
@@ -205,7 +312,7 @@ export default function Testimonials() {
     return () => ctx.revert();
   }, [loading]);
 
-  // ── Submit to MongoDB ──
+  // ── Submit ─────────────────────────────────────────────
   const handleSubmit = async () => {
     if (!name.trim() || text.trim().length < 10 || !rating) return;
     setSubmitting(true);
@@ -229,9 +336,11 @@ export default function Testimonials() {
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
 
+      // SSE will auto-push it back — but also add locally for instant feedback
       const newReview: Review = { ...payload, _id: data.id };
       setReviews((prev) => [prev[0], newReview, ...prev.slice(1)]);
       setNewIds((prev) => new Set(prev).add(data.id));
+
       setName("");
       setRole("");
       setText("");
@@ -245,18 +354,18 @@ export default function Testimonials() {
     }
   };
 
-  // ── Derived ──
+  // ── Derived values ─────────────────────────────────────
   const avgRating = calcAvg(reviews);
   const totalCount = Math.max(15, reviews.length);
-  const displayed = showAll ? reviews : reviews.slice(0, 4);
-  const hasMore = reviews.length > 4;
+  const displayed = showAll ? reviews : reviews.slice(0, SHOW_INITIAL);
+  const hiddenCount = reviews.length - SHOW_INITIAL;
 
   return (
     <section
       ref={sectionRef}
       className="relative w-full bg-[#0a0a0a] py-32 overflow-hidden"
     >
-      {/* BG grid */}
+      {/* BG decoration */}
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none"
         style={{
@@ -269,7 +378,7 @@ export default function Testimonials() {
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#1E90FF]/40 to-transparent" />
 
       <div className="relative z-10 mx-auto w-[85%]">
-        {/* Heading */}
+        {/* ── Heading ── */}
         <div ref={headingRef} className="mb-14">
           <div className="flex items-center gap-4 mb-5">
             <div className="w-7 h-px bg-[#1E90FF]" />
@@ -291,11 +400,18 @@ export default function Testimonials() {
               <span className="text-white/35 text-xs">
                 {totalCount}+ reviews
               </span>
+              {/* Live indicator */}
+              {liveCount > 0 && (
+                <span className="flex items-center gap-1.5 ml-1 text-[#1E90FF] text-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#1E90FF] animate-pulse" />
+                  Live
+                </span>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Cards */}
+        {/* ── Cards ── */}
         {loading ? (
           <div className="flex items-center gap-3 text-white/30 text-sm py-10 mb-10">
             {[0, 1, 2].map((i) => (
@@ -308,8 +424,8 @@ export default function Testimonials() {
             <span>Loading reviews...</span>
           </div>
         ) : (
-          <>
-            <div className="t-cards-grid grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="relative">
+            <div className="t-cards-grid grid grid-cols-1 md:grid-cols-2 gap-4 mb-0">
               {displayed.map((r) => (
                 <div key={getId(r)} className="t-card">
                   <ReviewCard review={r} isNew={newIds.has(getId(r))} />
@@ -317,39 +433,18 @@ export default function Testimonials() {
               ))}
             </div>
 
-            {/* Read More / Show Less */}
-            {hasMore && (
-              <div className="flex justify-center mt-2 mb-12">
-                <button
-                  onClick={() => setShowAll((v) => !v)}
-                  className="group flex items-center gap-2 border border-white/10 rounded-full px-7 py-3 text-sm text-white/50 hover:text-white hover:border-[#1E90FF]/40 transition-all duration-300"
-                >
-                  <span>
-                    {showAll
-                      ? "Show Less"
-                      : `Read More Reviews (${reviews.length - 4}+)`}
-                  </span>
-                  <svg
-                    className={`w-3.5 h-3.5 transition-transform duration-300 ${showAll ? "rotate-180" : "group-hover:translate-y-0.5"}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-              </div>
+            {hiddenCount > 0 && (
+              <ReadMoreBtn
+                hidden={hiddenCount}
+                showAll={showAll}
+                onClick={() => setShowAll((v) => !v)}
+              />
             )}
-            {!hasMore && <div className="mb-12" />}
-          </>
+            {hiddenCount <= 0 && <div className="mb-12" />}
+          </div>
         )}
 
-        {/* Form */}
+        {/* ── Submit Form ── */}
         <div
           ref={formRef}
           className="relative border border-white/[0.08] rounded-2xl p-8 md:p-10 bg-white/[0.02] overflow-hidden mb-10"
@@ -442,10 +537,10 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Stats Bar — BOTTOM */}
+        {/* ── Stats Bar ── */}
         <div
           ref={statsRef}
-          className="grid grid-cols-3 border border-white/[0.08] rounded-2xl overflow-hidden"
+          className="grid grid-cols-1 sm:grid-cols-3 border border-white/[0.08] rounded-2xl overflow-hidden"
         >
           {[
             { val: `${totalCount}+`, lbl: "Happy Customers", color: "#1E90FF" },
@@ -454,11 +549,11 @@ export default function Testimonials() {
           ].map((s, i) => (
             <div
               key={i}
-              className={`py-8 px-6 text-center transition-colors duration-300 hover:bg-[#1E90FF]/5
-                ${i < 2 ? "border-r border-white/[0.08]" : ""}`}
+              className={`py-6 sm:py-8 px-6 text-center transition-colors duration-300 hover:bg-[#1E90FF]/5
+              ${i < 2 ? "border-b sm:border-b-0 sm:border-r border-white/[0.08]" : ""}`}
             >
               <p
-                className="font-space text-[clamp(32px,4.5vw,52px)] font-bold leading-none tracking-tight mb-2"
+                className="font-space text-[clamp(28px,6vw,52px)] sm:text-[clamp(28px,4.5vw,52px)] font-bold leading-none tracking-tight mb-2"
                 style={{ color: s.color }}
               >
                 {s.val}

@@ -1,20 +1,38 @@
 import React from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import Services from "./components/Services";
 import Testimonials from "./components/Testimonials ";
 import HowItWorks from "./components/HowItWorks";
-import ConnectSection from "./components/connect";
 import Partners from "./components/clients";
+import ConnectSection from "./components/connect";
 
 export default function page() {
   return (
     <div>
       <Navbar />
-      <Hero />
-      <Testimonials />
-      <HowItWorks />
+
+      <section id="hero">
+        <Hero />
+      </section>
+
+      <section id="services">
+        <Services />
+      </section>
+
+      <section id="reviews">
+        <Testimonials />
+      </section>
+
+      <section id="how-it-works">
+        <HowItWorks />
+      </section>
+
       <Partners />
-      <ConnectSection />
+
+      <section id="contact">
+        <ConnectSection />
+      </section>
     </div>
   );
 }
