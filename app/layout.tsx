@@ -40,7 +40,6 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// ✅ Accent
 const bebas = Bebas_Neue({
   variable: "--font-bebas",
   weight: "400",
