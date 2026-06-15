@@ -6,6 +6,7 @@ import Testimonials from "./components/Testimonials ";
 import HowItWorks from "./components/HowItWorks";
 import Partners from "./components/clients";
 import ConnectSection from "./components/connect";
+import Products from "./components/Products";
 
 export default function page() {
   return (
@@ -26,6 +27,10 @@ export default function page() {
 
       <section id="how-it-works">
         <HowItWorks />
+      </section>
+
+      <section id="Products">
+        <Products />
       </section>
 
       <Partners />

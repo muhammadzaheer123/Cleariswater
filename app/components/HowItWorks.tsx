@@ -172,7 +172,7 @@ export default function HowItWorks() {
   return (
     <section
       ref={sectionRef}
-      className="bg-[#0a0a0a] px-6 md:px-12 lg:px-20 py-24 overflow-hidden w-full h-full"
+      className=" px-6 md:px-12 lg:px-20 py-24 overflow-hidden w-full h-full"
     >
       <div className="w-[85%] h-full mx-auto">
         <p

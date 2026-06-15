@@ -10,6 +10,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import ShaderBackground from "../app/components/ShaderBackground";
 
 const playfairDisplayHeading = Playfair_Display({
   subsets: ["latin"],
@@ -67,7 +68,11 @@ export default function RootLayout({
         playfairDisplayHeading.variable,
       )}
     >
-      <body suppressHydrationWarning className="min-h-full flex flex-col">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col bg-black"
+      >
+        <ShaderBackground />
         {children}
       </body>
     </html>

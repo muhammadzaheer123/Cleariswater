@@ -249,10 +249,7 @@ export default function Services() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full bg-[#0a0a0a] py-32 overflow-hidden"
-    >
+    <section ref={sectionRef} className="relative w-full py-32 overflow-hidden">
       {/* Background texture */}
       <div
         className="absolute inset-0 opacity-[0.03]"

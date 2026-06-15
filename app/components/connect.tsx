@@ -89,10 +89,7 @@ export default function ConnectSection() {
   ];
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full bg-[#050508] py-32 overflow-hidden"
-    >
+    <section ref={sectionRef} className="relative w-full py-32 overflow-hidden">
       {/* Decorative orbit graphic */}
       <div className="absolute right-[-200px] top-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.06] pointer-events-none">
         <div ref={orbitRef} className="w-full h-full relative">
@@ -241,7 +238,7 @@ export default function ConnectSection() {
                         })
                       }
                       className="w-full bg-white/4 border border-white/10 rounded-xl px-4 py-3.5 font-inter text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#1E90FF]/50 focus:bg-[#1E90FF]/5 transition-all duration-300"
-                      placeholder="Ahmed Khan"
+                      placeholder="Clearis Water"
                     />
                   </div>
 

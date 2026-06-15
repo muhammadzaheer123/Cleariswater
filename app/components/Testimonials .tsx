@@ -361,10 +361,7 @@ export default function Testimonials() {
   const hiddenCount = reviews.length - SHOW_INITIAL;
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full bg-[#0a0a0a] py-32 overflow-hidden"
-    >
+    <section ref={sectionRef} className="relative w-full py-32 overflow-hidden">
       {/* BG decoration */}
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none"

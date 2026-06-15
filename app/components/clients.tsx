@@ -34,7 +34,7 @@ export default function Partners() {
   }, []);
 
   return (
-    <section className="relative w-full py-30 bg-[#0a0a0a] overflow-hidden">
+    <section className="relative w-full py-30 overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-[#1E90FF]/10 blur-[120px] rounded-full" />
       </div>
