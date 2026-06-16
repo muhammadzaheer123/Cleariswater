@@ -72,12 +72,19 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
 function ReviewCard({ review, isNew }: { review: Review; isNew?: boolean }) {
   return (
     <div
-      className={`group relative border rounded-2xl p-7 overflow-hidden transition-all duration-500
-      ${
-        isNew
-          ? "border-[#1E90FF]/50 bg-[#1E90FF]/5"
-          : "border-white/[0.07] bg-white/[0.02] hover:border-[#1E90FF]/30 hover:bg-[#1E90FF]/[0.03]"
-      }`}
+      className={`
+    group relative rounded-2xl p-7 overflow-hidden transition-all duration-500
+
+    backdrop-blur-xl bg-white/5
+    border border-white/5
+    shadow-lg shadow-black/10
+
+    ${
+      isNew
+        ? "border-[#1E90FF]/40 bg-[#1E90FF]/10"
+        : "hover:bg-white/15 hover:border-[#1E90FF]/30"
+    }
+  `}
     >
       <span className="absolute top-5 right-6 text-[64px] font-black text-white/[0.025] leading-none select-none pointer-events-none">
         {review.name.charAt(0)}
@@ -98,7 +105,7 @@ function ReviewCard({ review, isNew }: { review: Review; isNew?: boolean }) {
         <div className="flex items-center gap-3">
           <div
             className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0
-            ${isNew ? "bg-[#1E90FF] text-white" : "bg-white/10 text-white/50"}`}
+            ${isNew ? "bg-[#1E90FF] text-white" : "bg-white/5 text-white/50"}`}
           >
             {review.name.charAt(0).toUpperCase()}
           </div>
@@ -444,7 +451,7 @@ export default function Testimonials() {
         {/* ── Submit Form ── */}
         <div
           ref={formRef}
-          className="relative border border-white/[0.08] rounded-2xl p-8 md:p-10 bg-white/[0.02] overflow-hidden mb-10"
+          className="relative border border-white/5 rounded-2xl p-8 md:p-10 bg-white/5 overflow-hidden mb-10"
         >
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#1E90FF]/35 to-transparent" />
 

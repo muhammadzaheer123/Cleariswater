@@ -1,11 +1,7 @@
-// app/components/ConnectSection.tsx
 "use client";
 
 import { useRef, useState } from "react";
-import { MessageCircle } from "lucide-react";
-import { FaInstagram } from "react-icons/fa";
-import { FaWhatsapp } from "react-icons/fa";
-import { FaLinkedinIn } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp, FaLinkedinIn } from "react-icons/fa";
 import { useConnectSectionAnimations } from "../animations/useConnectSectionAnimations";
 
 export default function ConnectSection() {
@@ -35,6 +31,7 @@ export default function ConnectSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
   };
 
   const contactInfo = [
@@ -88,32 +85,61 @@ export default function ConnectSection() {
     },
   ];
 
+  const socialLinks = [
+    {
+      icon: FaInstagram,
+      href: "https://www.instagram.com/cleariswater?igsh=MWxxNzZzcW13NDF3ZQ==",
+    },
+    {
+      icon: FaLinkedinIn,
+      href: "https://linkedin.com/in/your_profile",
+    },
+    {
+      icon: FaWhatsapp,
+      href: "https://wa.me/923452724778",
+    },
+  ];
+
+  const inputClass =
+    "w-full rounded-xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-md px-4 py-3.5 font-inter text-sm text-white placeholder:text-white/25 transition-all duration-300 focus:outline-none focus:border-[#1E90FF]/40 focus:bg-white/[0.06] focus:shadow-[0_0_20px_rgba(30,144,255,0.15)]";
+
   return (
-    <section ref={sectionRef} className="relative w-full py-32 overflow-hidden">
-      {/* Decorative orbit graphic */}
-      <div className="absolute right-[-200px] top-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.06] pointer-events-none">
-        <div ref={orbitRef} className="w-full h-full relative">
+    <section
+      ref={sectionRef}
+      className="relative w-full overflow-hidden py-10 pt-10"
+    >
+      {/* Background Overlay */}
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+
+      {/* Ambient Glows */}
+      <div className="absolute top-1/3 left-1/4 h-[500px] w-[500px] rounded-full bg-[#1E90FF]/10 blur-[180px]" />
+      <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-[#1E90FF]/5 blur-[160px]" />
+
+      {/* Decorative Orbit */}
+      <div className="absolute right-[-200px] top-1/2 -translate-y-1/2 h-[600px] w-[600px] opacity-[0.06] pointer-events-none">
+        <div ref={orbitRef} className="relative h-full w-full">
           <div className="absolute inset-0 rounded-full border border-white/40" />
           <div className="absolute inset-[60px] rounded-full border border-white/30" />
           <div className="absolute inset-[120px] rounded-full border border-white/20" />
           <div className="absolute inset-[180px] rounded-full border border-[#1E90FF]/60" />
-          <div className="absolute top-[20px] left-1/2 w-3 h-3 rounded-full bg-[#1E90FF] -translate-x-1/2" />
+          <div className="absolute top-[20px] left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-[#1E90FF]" />
         </div>
       </div>
 
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#1E90FF]/30 to-transparent" />
 
-      <div className="mx-auto w-[85%]">
+      <div className="relative z-10 mx-auto w-[85%]">
         {/* Heading */}
         <div ref={headingRef} className="mb-20">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="mb-6 flex items-center gap-4">
             <div className="h-[1px] w-16 bg-[#1E90FF]" />
-            <span className="font-inter text-xs tracking-[4px] text-[#1E90FF] uppercase">
+
+            <span className="font-inter text-xs uppercase tracking-[4px] text-[#1E90FF]">
               Get In Touch
             </span>
           </div>
 
-          <h2 className="font-space text-5xl md:text-[80px] font-semibold leading-[0.95] tracking-[-2px] text-white">
+          <h2 className="font-space text-5xl font-semibold leading-[0.95] tracking-[-2px] text-white md:text-[80px]">
             LET&apos;S <br />
             <span className="text-[#1E90FF]">CONNECT.</span>
           </h2>
@@ -124,8 +150,8 @@ export default function ConnectSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-16 items-start">
-          {/* Left */}
+        <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-[1fr_1.4fr]">
+          {/* Left Side */}
           <div ref={infoRef} className="space-y-10">
             <div className="space-y-4">
               {contactInfo.map((item, i) => (
@@ -134,18 +160,18 @@ export default function ConnectSection() {
                   href={item.href}
                   target={item.href ? "_blank" : undefined}
                   rel={item.href ? "noopener noreferrer" : undefined}
-                  className="group flex items-center gap-5 p-5 border border-white/8 rounded-2xl hover:border-[#1E90FF]/30 hover:bg-[#1E90FF]/5 transition-all duration-300 cursor-pointer"
+                  className="group flex items-center gap-5 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#1E90FF]/30 hover:bg-white/[0.05]"
                 >
-                  <div className="flex-shrink-0 w-10 h-10 rounded-xl border border-white/10 group-hover:border-[#1E90FF]/30 flex items-center justify-center transition-colors duration-300">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-300 group-hover:border-[#1E90FF]/30">
                     {item.icon}
                   </div>
 
                   <div>
-                    <p className="font-inter text-[10px] tracking-[3px] text-white/30 mb-1">
+                    <p className="mb-1 font-inter text-[10px] tracking-[3px] text-white/30">
                       {item.label}
                     </p>
 
-                    <p className="font-inter text-sm text-white/70 group-hover:text-white transition-colors duration-300">
+                    <p className="font-inter text-sm text-white/70 transition-colors duration-300 group-hover:text-white">
                       {item.value}
                     </p>
                   </div>
@@ -153,48 +179,55 @@ export default function ConnectSection() {
               ))}
             </div>
 
-            <div className="h-px bg-white/8" />
+            <div className="h-px bg-white/10" />
 
             {/* Social */}
             <div>
-              <p className="font-inter text-[14px] tracking-[1px] text-white/30 uppercase mb-5">
+              <p className="mb-5 font-inter text-sm uppercase tracking-[1px] text-white/30">
                 Follow Us
               </p>
 
               <div className="flex gap-3">
-                <button className="w-10 h-10 cursor-pointer rounded-xl border border-white/10 hover:border-[#1E90FF]/40 hover:bg-[#1E90FF]/10 text-white/40 hover:text-[#1E90FF] transition-all duration-300 flex items-center justify-center">
-                  <FaInstagram size={16} />
-                </button>
-
-                <button className="w-10 h-10 cursor-pointer rounded-xl border border-white/10 hover:border-[#1E90FF]/40 hover:bg-[#1E90FF]/10 text-white/40 hover:text-[#1E90FF] transition-all duration-300 flex items-center justify-center">
-                  <FaLinkedinIn size={16} />
-                </button>
-
-                <button className="w-10 h-10 cursor-pointer rounded-xl border border-white/10 hover:border-[#1E90FF]/40 hover:bg-[#1E90FF]/10 text-white/40 hover:text-[#1E90FF] transition-all duration-300 flex items-center justify-center">
-                  <FaWhatsapp size={16} href="https://wa.me/923452724778" />
-                </button>
+                {socialLinks.map(({ icon: Icon, href }, index) => (
+                  <a
+                    key={index}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/40 backdrop-blur-md transition-all duration-300 hover:border-[#1E90FF]/30 hover:bg-[#1E90FF]/10 hover:text-[#1E90FF]"
+                  >
+                    <Icon size={16} />
+                  </a>
+                ))}
               </div>
             </div>
 
             {/* Quote */}
-            <div className="p-6 border-l-2 border-[#1E90FF]/40 bg-[#1E90FF]/5 rounded-r-xl">
-              <p className="font-inter text-sm leading-relaxed text-white/50 italic">
-                &ldquo;We don&apos;t just sell water — we deliver a statement.
-                Your guests deserve the best from the very first sip.&rdquo;
-              </p>
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.35)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1E90FF]/10 to-transparent" />
 
-              <p className="mt-3 font-space text-xs tracking-[2px] text-[#1E90FF]/70">
-                — CLEARIS TEAM
-              </p>
+              <div className="relative z-10">
+                <p className="font-inter text-sm italic leading-relaxed text-white/50">
+                  &ldquo;We don&apos;t just sell water — we deliver a statement.
+                  Your guests deserve the best from the very first sip.&rdquo;
+                </p>
+
+                <p className="mt-3 font-space text-xs tracking-[2px] text-[#1E90FF]/70">
+                  — CLEARIS TEAM
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Right */}
-          <div ref={formRef}>
+          {/* Form */}
+          <div
+            ref={formRef}
+            className="rounded-[32px] border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.45)] md:p-10"
+          >
             {!submitted ? (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="mb-6">
-                  <p className="font-inter text-xs tracking-[2px] text-white/30 uppercase mb-3">
+                  <p className="mb-3 font-inter text-xs uppercase tracking-[2px] text-white/30">
                     I&apos;m interested in
                   </p>
 
@@ -209,10 +242,10 @@ export default function ConnectSection() {
                         key={type}
                         type="button"
                         onClick={() => setFormState({ ...formState, type })}
-                        className={`px-4 py-2 rounded-full font-inter text-xs border transition-all duration-200 ${
+                        className={`rounded-full px-4 py-2 font-inter text-xs transition-all duration-300 backdrop-blur-md ${
                           formState.type === type
-                            ? "border-[#1E90FF] bg-[#1E90FF]/15 text-[#1E90FF]"
-                            : "border-white/10 text-white/40 hover:border-white/20"
+                            ? "border border-[#1E90FF]/40 bg-[#1E90FF]/15 text-[#4EA8FF] shadow-[0_0_20px_rgba(30,144,255,0.15)]"
+                            : "border border-white/[0.08] bg-white/[0.03] text-white/50 hover:bg-white/[0.05]"
                         }`}
                       >
                         {type}
@@ -221,9 +254,9 @@ export default function ConnectSection() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block font-inter text-[10px] tracking-[3px] text-white/30 uppercase mb-2">
+                    <label className="mb-2 block font-inter text-[10px] uppercase tracking-[3px] text-white/30">
                       Your Name
                     </label>
 
@@ -237,13 +270,13 @@ export default function ConnectSection() {
                           name: e.target.value,
                         })
                       }
-                      className="w-full bg-white/4 border border-white/10 rounded-xl px-4 py-3.5 font-inter text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#1E90FF]/50 focus:bg-[#1E90FF]/5 transition-all duration-300"
+                      className={inputClass}
                       placeholder="Clearis Water"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-inter text-[10px] tracking-[3px] text-white/30 uppercase mb-2">
+                    <label className="mb-2 block font-inter text-[10px] uppercase tracking-[3px] text-white/30">
                       Business
                     </label>
 
@@ -256,14 +289,14 @@ export default function ConnectSection() {
                           business: e.target.value,
                         })
                       }
-                      className="w-full bg-white/4 border border-white/10 rounded-xl px-4 py-3.5 font-inter text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#1E90FF]/50 focus:bg-[#1E90FF]/5 transition-all duration-300"
+                      className={inputClass}
                       placeholder="Restaurant name"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-inter text-[10px] tracking-[3px] text-white/30 uppercase mb-2">
+                  <label className="mb-2 block font-inter text-[10px] uppercase tracking-[3px] text-white/30">
                     Email Address
                   </label>
 
@@ -277,19 +310,19 @@ export default function ConnectSection() {
                         email: e.target.value,
                       })
                     }
-                    className="w-full bg-white/4 border border-white/10 rounded-xl px-4 py-3.5 font-inter text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#1E90FF]/50 focus:bg-[#1E90FF]/5 transition-all duration-300"
+                    className={inputClass}
                     placeholder="you@business.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-inter text-[10px] tracking-[3px] text-white/30 uppercase mb-2">
+                  <label className="mb-2 block font-inter text-[10px] uppercase tracking-[3px] text-white/30">
                     Message
                   </label>
 
                   <textarea
-                    required
                     rows={5}
+                    required
                     value={formState.message}
                     onChange={(e) =>
                       setFormState({
@@ -297,35 +330,29 @@ export default function ConnectSection() {
                         message: e.target.value,
                       })
                     }
-                    className="w-full bg-white/4 border border-white/10 rounded-xl px-4 py-3.5 font-inter text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#1E90FF]/50 focus:bg-[#1E90FF]/5 transition-all duration-300 resize-none"
+                    className={`${inputClass} resize-none`}
                     placeholder="Tell us about your water needs, event size, or branding vision..."
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="submit-btn group relative w-full overflow-hidden rounded-full bg-[#1E90FF] px-8 py-4 font-inter text-sm text-white transition-all duration-300 hover:scale-[1.02] mt-2"
+                  className="group relative mt-2 w-full overflow-hidden rounded-full bg-[#1E90FF] px-8 py-4 font-inter text-sm text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(30,144,255,0.35)]"
                 >
                   <span className="relative z-10 tracking-[1px]">
                     Send Message
                   </span>
-
-                  <div className="absolute inset-0 translate-y-full bg-white transition-transform duration-500 group-hover:translate-y-0" />
-
-                  <span className="absolute inset-0 z-20 flex items-center justify-center text-[#1E90FF] font-semibold opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    Send Message →
-                  </span>
                 </button>
 
-                <p className="font-inter text-xs text-white/20 text-center mt-3">
+                <p className="mt-3 text-center font-inter text-xs text-white/20">
                   We respond within 24 hours. No spam, ever.
                 </p>
               </form>
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 rounded-full border-2 border-[#1E90FF] flex items-center justify-center mb-6">
+                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#1E90FF]">
                   <svg
-                    className="w-7 h-7 text-[#1E90FF]"
+                    className="h-7 w-7 text-[#1E90FF]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -339,28 +366,21 @@ export default function ConnectSection() {
                   </svg>
                 </div>
 
-                <h3 className="font-space text-3xl font-semibold text-white tracking-[-1px] mb-3">
+                <h3 className="mb-3 font-space text-3xl font-semibold tracking-[-1px] text-white">
                   Message Sent.
                 </h3>
 
-                <p className="font-inter text-sm text-white/40 max-w-[300px] leading-relaxed">
+                <p className="max-w-[300px] font-inter text-sm leading-relaxed text-white/40">
                   We&apos;ve received your message and will get back to you
                   within 24 hours.
                 </p>
-
-                <button
-                  onClick={() => setSubmitted(false)}
-                  className="mt-8 font-inter text-xs tracking-[2px] text-[#1E90FF]/60 hover:text-[#1E90FF] transition-colors uppercase"
-                >
-                  Send Another →
-                </button>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[1px] bg-gradient-to-r from-transparent via-[#1E90FF]/40 to-transparent" />
+      <div className="absolute bottom-0 left-1/2 h-[1px] w-[400px] -translate-x-1/2 bg-gradient-to-r from-transparent via-[#1E90FF]/40 to-transparent" />
     </section>
   );
 }

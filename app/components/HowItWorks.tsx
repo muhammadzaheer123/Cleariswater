@@ -207,12 +207,19 @@ export default function HowItWorks() {
               }}
               onMouseEnter={() => handleCardHover(i, true)}
               onMouseLeave={() => handleCardHover(i, false)}
-              className="relative bg-[#111111] rounded-2xl p-8 border border-white/[0.06] cursor-default"
+              className="relative rounded-2xl p-8 cursor-default
+  bg-gradient-to-br from-white/5 to-white/5
+  border border-white/5
+  backdrop-blur-xl
+  shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.15)]
+  transition-all duration-100
+  hover:-translate-y-2 hover:border-[#1E90FF]/40
+  hover:shadow-[0_16px_48px_rgba(0,0,0,0.5),0_0_32px_rgba(30,144,255,0.1)]"
             >
               {/* Number */}
               <p
                 className="step-num font-bebas text-5xl mb-6 leading-none select-none"
-                style={{ color: "#1f1f1f", letterSpacing: "0.02em" }}
+                style={{ color: "#48494B", letterSpacing: "0.02em" }}
               >
                 {step.num}
               </p>

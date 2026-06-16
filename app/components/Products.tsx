@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const bottles = [
   {
@@ -54,8 +54,24 @@ const bottles = [
   },
 ];
 
+// Tracks whether we're below the md breakpoint (768px), same breakpoint
+// already used elsewhere in this file (md:py-52, md:text-[90px], etc.)
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < breakpoint);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
 export default function Products() {
   const [active, setActive] = useState(1);
+  const isMobile = useIsMobile();
 
   return (
     <section id="products" className="relative overflow-hidden py-40 md:py-52">
@@ -93,21 +109,32 @@ export default function Products() {
         </motion.div>
 
         {/* Accordion */}
-        <div className="flex justify-center gap-3 overflow-x-auto pb-12">
+        <div
+          className={`flex justify-center gap-3 pb-12 ${
+            isMobile ? "flex-col" : "overflow-x-auto"
+          }`}
+        >
           {bottles.map((bottle, idx) => (
             <motion.div
               key={bottle.id}
               className="relative flex-shrink-0 cursor-pointer overflow-hidden rounded-[28px]"
-              animate={{
-                width: active === idx ? "450px" : "86px",
-                height: "570px",
-              }}
+              animate={
+                isMobile
+                  ? {
+                      width: "100%",
+                      height: active === idx ? "520px" : "84px",
+                    }
+                  : {
+                      width: active === idx ? "450px" : "86px",
+                      height: "570px",
+                    }
+              }
               transition={{
                 duration: 0.45,
                 ease: [0.22, 1, 0.36, 1],
               }}
               onClick={() => setActive(idx)}
-              onMouseEnter={() => setActive(idx)}
+              onMouseEnter={() => !isMobile && setActive(idx)}
             >
               {/* bg */}
               <div
@@ -154,10 +181,14 @@ export default function Products() {
                   >
                     <span
                       className="font-space text-[11px] font-medium tracking-[0.35em] text-white/50"
-                      style={{
-                        writingMode: "vertical-rl",
-                        transform: "rotate(180deg)",
-                      }}
+                      style={
+                        isMobile
+                          ? {}
+                          : {
+                              writingMode: "vertical-rl",
+                              transform: "rotate(180deg)",
+                            }
+                      }
                     >
                       {bottle.ml}
                     </span>
