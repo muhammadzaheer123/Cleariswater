@@ -16,7 +16,7 @@ const steps = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 text-[#1E90FF]"
+        className="w-7 h-7 text-[#1E90FF]"
       >
         <path
           strokeLinecap="round"
@@ -38,7 +38,7 @@ const steps = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 text-[#1E90FF]"
+        className="w-7 h-7 text-[#1E90FF]"
       >
         <path
           strokeLinecap="round"
@@ -60,7 +60,7 @@ const steps = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 text-[#1E90FF]"
+        className="w-7 h-7 text-[#1E90FF]"
       >
         <path
           strokeLinecap="round"
@@ -79,122 +79,134 @@ export default function HowItWorks() {
   const sectionRef = useRef<HTMLElement>(null);
   const labelRef = useRef<HTMLParagraphElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-
   const cardsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(labelRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.7,
-        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 95%",
+          once: true,
+        },
+        defaults: { ease: "power3.out" },
       });
 
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 60,
-        skewY: 4,
-        duration: 0.9,
-        ease: "power3.out",
-        delay: 0.1,
-        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-      });
+      tl.fromTo(labelRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.4 }
+      )
+        .fromTo(titleRef.current,
+          { opacity: 0, y: 35, skewY: 2 },
+          { opacity: 1, y: 0, skewY: 0, duration: 0.55 },
+          "-=0.2"
+        )
+        .fromTo(subtitleRef.current,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.4 },
+          "-=0.3"
+        )
+        .fromTo(
+          cardsRef.current,
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 },
+          "-=0.25"
+        )
+        .fromTo(ctaRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.4 },
+          "-=0.2"
+        );
 
-      gsap.from(lineRef.current, {
-        scaleX: 0,
-        transformOrigin: "left center",
-        duration: 1.2,
-        ease: "power2.inOut",
-        delay: 0.4,
-        scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
-      });
-
-      gsap.from(cardsRef.current, {
-        opacity: 0,
-        y: 80,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.18,
-        delay: 0.3,
-        scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
-      });
-
-      cardsRef.current.forEach((card, i) => {
-        const numEl = card?.querySelector(".step-num");
-        if (!numEl) return;
-        gsap.from(numEl, {
-          opacity: 0,
-          x: -30,
-          duration: 0.6,
-          ease: "power2.out",
-          delay: 0.5 + i * 0.18,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
-        });
-      });
-
-      gsap.from(ctaRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.7,
-        ease: "power2.out",
-        delay: 0.9,
-        scrollTrigger: { trigger: sectionRef.current, start: "top 70%" },
-      });
+      gsap.fromTo(lineRef.current,
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          transformOrigin: "left center",
+          duration: 0.9,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 95%",
+            once: true,
+          },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  const handleCardHover = (index: number, entering: boolean): void => {
+  const handleCardHover = (index: number, entering: boolean) => {
     const card = cardsRef.current[index];
     if (!card) return;
-
     gsap.to(card, {
-      y: entering ? -8 : 0,
-      borderColor: entering
-        ? "rgba(30,144,255,0.35)"
-        : "rgba(255,255,255,0.06)",
-      duration: 0.35,
+      y: entering ? -10 : 0,
+      duration: 0.1,
       ease: "power2.out",
-    });
-
-    const numEl = card.querySelector(".step-num");
-    if (!numEl) return;
-    gsap.to(numEl, {
-      color: entering ? "#1E90FF" : "#1f1f1f",
-      duration: 0.3,
     });
   };
 
   return (
     <section
       ref={sectionRef}
-      className=" px-6 md:px-12 lg:px-20 py-24 overflow-hidden w-full h-full"
+      className="relative py-28 md:py-36 overflow-hidden w-full"
     >
-      <div className="w-[85%] h-full mx-auto">
-        <p
-          ref={labelRef}
-          className="text-center font-inter text-[11px] tracking-[4px] text-[#1E90FF] uppercase mb-4"
-        >
-          The Process
-        </p>
+      {/* Ambient glow blobs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[700px] h-[400px] bg-[#1E90FF]/6 blur-[160px] rounded-full" />
+        <div className="absolute left-0 bottom-0 w-[350px] h-[350px] bg-[#1E90FF]/4 blur-[120px] rounded-full" />
+        <div className="absolute right-0 top-1/2 w-[300px] h-[300px] bg-[#C9A84C]/4 blur-[120px] rounded-full" />
+      </div>
 
-        <h2
-          ref={titleRef}
-          className="font-bebas text-center uppercase text-white text-5xl md:text-[80px] tracking-[-1px] mb-16 leading-none"
-        >
-          How It <span className="text-[#1E90FF]">Works</span>
-        </h2>
+      <div className="relative w-[85%] mx-auto">
+        {/* Header */}
+        <div className="text-center mb-16 md:mb-20">
+          <p
+            ref={labelRef}
+            className="font-inter text-[11px] tracking-[5px] text-[#1E90FF] uppercase mb-4"
+          >
+            The Process
+          </p>
+          <h2
+            ref={titleRef}
+            className="font-bebas text-center uppercase text-white text-5xl md:text-[82px] tracking-[-1px] mb-5 leading-none"
+          >
+            How It <span className="text-[#1E90FF]">Works</span>
+          </h2>
+          <p
+            ref={subtitleRef}
+            className="font-inter text-white/40 text-sm max-w-lg mx-auto leading-relaxed"
+          >
+            From concept to your table — a seamless three-step journey to custom branded premium water.
+          </p>
+        </div>
 
-        <div className="relative max-w-5xl mx-auto hidden md:block mb-[-32px]">
+        {/* Connector line (desktop only) */}
+        <div className="relative max-w-5xl mx-auto hidden md:block mb-[-36px] z-10">
           <div
             ref={lineRef}
-            className="absolute left-[16.67%] right-[16.67%] h-[1px] bg-gradient-to-r from-transparent via-[#1E90FF]/30 to-transparent"
-            style={{ top: "28px" }}
+            className="absolute left-[16.67%] right-[16.67%] h-[1px]"
+            style={{
+              top: "31px",
+              background:
+                "linear-gradient(to right, transparent, rgba(30,144,255,0.5) 30%, rgba(30,144,255,0.5) 70%, transparent)",
+            }}
           />
+          {/* Dots on the line */}
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-[#1E90FF] border border-[#1E90FF]/50 shadow-[0_0_10px_rgba(30,144,255,0.7)]"
+              style={{
+                top: "27px",
+                left: `calc(${16.67 + i * 33.33}% - 4px)`,
+              }}
+            />
+          ))}
         </div>
 
         {/* Cards */}
@@ -202,54 +214,62 @@ export default function HowItWorks() {
           {steps.map((step, i) => (
             <div
               key={i}
-              ref={(el) => {
-                if (el) cardsRef.current[i] = el;
-              }}
+              ref={(el) => { if (el) cardsRef.current[i] = el; }}
               onMouseEnter={() => handleCardHover(i, true)}
               onMouseLeave={() => handleCardHover(i, false)}
-              className="relative rounded-2xl p-8 cursor-default
-  bg-gradient-to-br from-white/5 to-white/5
-  border border-white/5
-  backdrop-blur-xl
-  shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.15)]
-  transition-all duration-100
-  hover:-translate-y-2 hover:border-[#1E90FF]/40
-  hover:shadow-[0_16px_48px_rgba(0,0,0,0.5),0_0_32px_rgba(30,144,255,0.1)]"
+              className="group relative rounded-2xl p-8 border border-white/[0.07] cursor-default transition-all duration-500 hover:border-[#1E90FF]/30 hover:shadow-[0_0_40px_rgba(30,144,255,0.1)]"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+              }}
             >
-              {/* Number */}
+              {/* Top inner highlight */}
+              <div className="absolute inset-x-0 top-0 h-[1px] rounded-t-2xl bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+              {/* Hover glow spot */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#1E90FF]/0 via-[#1E90FF]/0 to-[#1E90FF]/0 opacity-0 group-hover:opacity-100 group-hover:from-[#1E90FF]/5 group-hover:to-transparent transition-all duration-500" />
+
+              {/* Step number */}
               <p
-                className="step-num font-bebas text-5xl mb-6 leading-none select-none"
-                style={{ color: "#48494B", letterSpacing: "0.02em" }}
+                className="step-num font-bebas text-6xl mb-6 leading-none select-none transition-colors duration-300"
+                style={{ color: "rgba(255,255,255,0.06)", letterSpacing: "0.02em" }}
               >
                 {step.num}
               </p>
 
               {/* Icon */}
-              <div className="w-11 h-11 rounded-xl bg-[#1a1a1a] border border-white/[0.06] flex items-center justify-center mb-5">
+              <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-6 border border-white/[0.08] transition-all duration-300 group-hover:border-[#1E90FF]/30 group-hover:shadow-[0_0_20px_rgba(30,144,255,0.15)]"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  backdropFilter: "blur(8px)",
+                }}
+              >
                 {step.icon}
               </div>
 
               {/* Title */}
-              <h3 className="font-space text-white text-xl font-semibold mb-3 tracking-tight">
+              <h3 className="font-space text-white text-xl font-semibold mb-3 tracking-tight transition-colors duration-300 group-hover:text-white">
                 {step.title}
               </h3>
 
               {/* Description */}
-              <p className="font-inter text-[#555] text-sm leading-relaxed font-light">
+              <p className="font-inter text-white/35 text-sm leading-relaxed font-light mb-6">
                 {step.desc}
               </p>
 
-              {/* Tag — matches Navbar button style */}
-              <span className="inline-block mt-5 font-inter text-[11px] tracking-[3px] uppercase text-[#1E90FF] bg-[#1E90FF]/10 border border-[#1E90FF]/20 rounded-full px-3 py-1">
+              {/* Tag */}
+              <span className="inline-block font-inter text-[10px] tracking-[3px] uppercase text-[#1E90FF] bg-[#1E90FF]/10 border border-[#1E90FF]/20 rounded-full px-3 py-1 transition-all duration-300 group-hover:bg-[#1E90FF]/15 group-hover:border-[#1E90FF]/35">
                 {step.tag}
               </span>
             </div>
           ))}
         </div>
 
-        {/* CTA — matches Hero button style */}
+        {/* CTA */}
         <div ref={ctaRef} className="text-center mt-14">
-          <button className="group relative overflow-hidden rounded-full bg-[#1E90FF] px-10 py-4 font-inter text-sm tracking-[2px] font-medium uppercase text-white transition-all duration-300 hover:scale-[1.03]">
+          <button className="group relative overflow-hidden rounded-full bg-[#1E90FF] px-10 py-4 font-inter text-sm tracking-[2px] font-medium uppercase text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(30,144,255,0.4)]">
             <span className="relative z-10">Get Started</span>
             <div className="absolute inset-0 translate-y-full bg-white transition-transform duration-500 group-hover:translate-y-0" />
             <span className="absolute inset-0 z-20 flex items-center justify-center text-black opacity-0 transition-opacity duration-500 group-hover:opacity-100">

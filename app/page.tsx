@@ -16,7 +16,9 @@ export default function page() {
       <section id="hero">
         <Hero />
       </section>
-
+      <section id="Products">
+        <Products />
+      </section>
       <section id="services">
         <Services />
       </section>
@@ -29,9 +31,7 @@ export default function page() {
         <HowItWorks />
       </section>
 
-      <section id="Products">
-        <Products />
-      </section>
+
 
       <Partners />
 
